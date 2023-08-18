@@ -17,6 +17,7 @@ En el ejercicio anterior, el video supuestamente decia que era JWT pero en reali
       - [3. JWT por Tymon](#3-jwt-por-tymon)
       - [4. Añadir provider JWT en './config/app.php'](#4-añadir-provider-jwt-en-configappphp)
       - [5. Publicar provider JWT](#5-publicar-provider-jwt)
+      - [6. Generar una clave secreta JWT en .env](#6-generar-una-clave-secreta-jwt-en-env)
   - [Uso](#uso)
       - [1. Después de clonar el repositorio, instalar dependencias](#1-después-de-clonar-el-repositorio-instalar-dependencias)
       - [2. Iniciar servidor](#2-iniciar-servidor)
@@ -67,6 +68,12 @@ composer require tymon/jwt-auth
 
 ```bash
 php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+```
+
+#### 6. Generar una clave secreta JWT en .env
+
+```bash
+php artisan jwt:secret
 ```
 
 ## Uso
