@@ -48,8 +48,15 @@ class AuthController extends Controller
   function logout()
   {
     $cookie = Cookie::forget('jwt');
+
+    /** @var User $user */
+    $user = Auth::user();
+    $user->tokens()
+      ->where('id', $user->currentAccessToken()->id)
+      ->delete(); // Revocar el token actual
+
     return response([
-      'message' => 'Success!'
+      'message' => 'Logged out successfully.',
     ])->withCookie($cookie);
   }
 }
