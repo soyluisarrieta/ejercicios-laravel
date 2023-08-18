@@ -14,6 +14,7 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
   - [Instalaciones](#instalaciones)
       - [1. Crear proyecto](#1-crear-proyecto)
       - [2. Para autocompletado preciso del editor IDE Helper for Laravel](#2-para-autocompletado-preciso-del-editor-ide-helper-for-laravel)
+      - [3. Laravel Sanctum](#3-laravel-sanctum)
   - [Uso](#uso)
       - [1. Después de clonar el repositorio, instalar dependencias](#1-después-de-clonar-el-repositorio-instalar-dependencias)
       - [2. Iniciar servidor](#2-iniciar-servidor)
@@ -45,6 +46,12 @@ composer create-project laravel/laravel 4.authentication-jwt
 
 ```bash
 composer require --dev barryvdh/laravel-ide-helper
+```
+
+#### 3. Laravel Sanctum
+
+```bash
+composer require laravel/sanctum
 ```
 
 ## Uso
