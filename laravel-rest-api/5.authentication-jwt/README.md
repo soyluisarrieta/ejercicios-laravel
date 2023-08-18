@@ -160,7 +160,18 @@ php artisan migrate
 ### Rutas
 
 ```php
+// ...
 
+Route::group([
+  'middleware' => 'api',
+  'prefix' => 'auth'
+], function ($route) {
+  Route::post('register', []);
+  Route::post('login', []);
+  Route::post('logout', []);
+  Route::post('refresh', []);
+  Route::post('me', []);
+});
 ```
 
 ### Controllers
