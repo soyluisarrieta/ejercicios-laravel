@@ -23,13 +23,13 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [5. Ejecutar migraciones](#5-ejecutar-migraciones)
       - [6. Activar `supports_credentials' => true` en "./config/corts.php"](#6-activar-supports_credentials--true-en-configcortsphp)
   - [Notas](#notas)
-    - [Router](#router)
-      - [Crear rutas](#crear-rutas)
+    - [Rutas](#rutas)
     - [Controllers](#controllers)
       - [Crear controlador](#crear-controlador)
-      - [Controlador user](#controlador-user)
-      - [Controlador register](#controlador-register)
-      - [Controlador login](#controlador-login)
+      - [Método user](#método-user)
+      - [Método register](#método-register)
+      - [Método login](#método-login)
+      - [Método logout](#método-logout)
     - [Migrations](#migrations)
       - [Migración de tabla user](#migración-de-tabla-user)
     - [Models](#models)
@@ -87,9 +87,7 @@ php artisan migrate
 
 ## Notas
 
-### Router
-
-#### Crear rutas
+### Rutas
 
 ```php
 Route::post('register', [AuthController::class, 'register']);
@@ -97,6 +95,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
   Route::get('user', [AuthController::class, 'user']);
+  Route::post('logout', [AuthController::class, 'logout']);
 });
 ```
 
@@ -108,7 +107,7 @@ Route::middleware('auth:sanctum')->group(function () {
 php artisan make:controller AuthController
 ```
 
-#### Controlador user
+#### Método user
 
 
 ```php
@@ -122,7 +121,7 @@ function user()
 // ...
 ```
 
-#### Controlador register
+#### Método register
 
 ```php
 // ...
@@ -139,7 +138,7 @@ function register(Request $request)
 // ...
 ```
 
-#### Controlador login
+#### Método login
 
 ```php
 // ...
@@ -163,6 +162,22 @@ function login(Request $request)
       'token' => $token
     ])->withCookie($cookie);
   }
+
+// ...
+```
+
+#### Método logout
+
+```php
+// ...
+
+function logout()
+{
+  $cookie = Cookie::forget('jwt');
+  return response([
+    'message' => 'Success!'
+  ])->withCookie($cookie);
+}
 
 // ...
 ```
