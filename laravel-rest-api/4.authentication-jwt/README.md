@@ -90,12 +90,13 @@ php artisan migrate
 
 #### Crear rutas
 
-En lugar de usar la ruta para autenticación Sanctum, usarémos esta ruta para realizar el proceso en el controlador
-
 ```php
-Route::get('user', [AuthController::class, 'user']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+  Route::get('user', [AuthController::class, 'user']);
+});
 ```
 
 ### Controllers
