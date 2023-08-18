@@ -22,7 +22,7 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [5. Ejecutar migraciones](#5-ejecutar-migraciones)
   - [Notas](#notas)
     - [Router](#router)
-      - [Crear ruta](#crear-ruta)
+      - [Crear rutas](#crear-rutas)
     - [Controllers](#controllers)
       - [Crear controlador](#crear-controlador)
       - [Controlador user](#controlador-user)
@@ -76,12 +76,13 @@ php artisan migrate
 
 ### Router
 
-#### Crear ruta
+#### Crear rutas
 
 En lugar de usar la ruta para autenticación Sanctum, usarémos esta ruta para realizar el proceso en el controlador
 
 ```php
 Route::get('user', [AuthController::class, 'user']);
+Route::post('register', [AuthController::class, 'register']);
 ```
 
 ### Controllers
