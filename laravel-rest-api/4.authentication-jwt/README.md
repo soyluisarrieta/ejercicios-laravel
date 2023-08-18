@@ -23,6 +23,7 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
   - [Notas](#notas)
     - [Routers](#routers)
     - [Controllers](#controllers)
+      - [Crear controlador](#crear-controlador)
     - [Models](#models)
   - [Constribución](#constribución)
 
@@ -70,6 +71,12 @@ php artisan migrate
 ### Routers
 
 ### Controllers
+
+#### Crear controlador
+
+```bash
+php artisan make:controller AuthController
+```
 
 ### Models
 
