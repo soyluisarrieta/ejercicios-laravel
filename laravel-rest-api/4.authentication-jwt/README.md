@@ -79,7 +79,6 @@ En lugar de usar la ruta para autenticación Sanctum, usarémos esta ruta para r
 Route::get('user', [AuthController::class, 'user']);
 ```
 
-
 ### Controllers
 
 #### Crear controlador
