@@ -21,7 +21,8 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [4. Crear base de datos MySQL en XAMPP con el nombre 'laravel-api-jwt' o cambiar nombre en el archivo .env `DB_DATABASE`](#4-crear-base-de-datos-mysql-en-xampp-con-el-nombre-laravel-api-jwt-o-cambiar-nombre-en-el-archivo-env-db_database)
       - [5. Ejecutar migraciones](#5-ejecutar-migraciones)
   - [Notas](#notas)
-    - [Routers](#routers)
+    - [Router](#router)
+      - [Crear ruta](#crear-ruta)
     - [Controllers](#controllers)
       - [Crear controlador](#crear-controlador)
     - [Models](#models)
@@ -68,7 +69,16 @@ php artisan migrate
 
 ## Notas
 
-### Routers
+### Router
+
+#### Crear ruta
+
+En lugar de usar la ruta para autenticación Sanctum, usarémos esta ruta para realizar el proceso en el controlador
+
+```php
+Route::get('user', [AuthController::class, 'user']);
+```
+
 
 ### Controllers
 
