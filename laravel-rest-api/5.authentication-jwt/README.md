@@ -19,6 +19,7 @@ En el ejercicio anterior, el video supuestamente decia que era JWT pero en reali
       - [5. Publicar provider JWT](#5-publicar-provider-jwt)
       - [6. Generar una clave secreta JWT en .env](#6-generar-una-clave-secreta-jwt-en-env)
       - [7. Configurar auth para jwt](#7-configurar-auth-para-jwt)
+      - [8. Implementar JWTSubject en el modelo user](#8-implementar-jwtsubject-en-el-modelo-user)
   - [Uso](#uso)
       - [1. Después de clonar el repositorio, instalar dependencias](#1-después-de-clonar-el-repositorio-instalar-dependencias)
       - [2. Iniciar servidor](#2-iniciar-servidor)
@@ -105,6 +106,28 @@ En el archivo './config/auth.php' configuramos lo siguiente:
 ],
 
 // ...
+```
+
+#### 8. Implementar JWTSubject en el modelo user
+
+```php
+use Tymon\JWTAuth\Contracts\JWTSubject;
+// ...
+
+class User extends Authenticatable implements JWTSubject
+{
+  // ...  
+
+  public function getJWTIdentifier()
+  {
+    return $this->getKey();
+  }
+
+  public function getJWTCustomClaims()
+  {
+    return [];
+  }
+}
 ```
 
 ## Uso
