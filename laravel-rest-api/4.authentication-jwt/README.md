@@ -25,6 +25,8 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [Crear ruta](#crear-ruta)
     - [Controllers](#controllers)
       - [Crear controlador](#crear-controlador)
+      - [Controlador user](#controlador-user)
+      - [Controlador register](#controlador-register)
     - [Migrations](#migrations)
       - [Migración de tabla user](#migración-de-tabla-user)
     - [Models](#models)
@@ -88,6 +90,37 @@ Route::get('user', [AuthController::class, 'user']);
 
 ```bash
 php artisan make:controller AuthController
+```
+
+#### Controlador user
+
+
+```php
+// ...
+
+function user()
+{
+  return 'Authenticated user';
+}
+
+// ...
+```
+
+#### Controlador register
+
+```php
+// ...
+
+function register(Request $request)
+{
+  return User::create([
+    'name' => $request->input('name'),
+    'email' => $request->input('email'),
+    'password' => Hash::make($request->input('password')),
+  ]);
+}
+
+// ...
 ```
 
 ### Migrations
