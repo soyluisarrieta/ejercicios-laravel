@@ -1,15 +1,15 @@
-# Proyecto: Autenticación con JSON Web Token
+# Proyecto: Autenticación con Sactum Cookie Token
 
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 
-En este ejercicio realicé una autenticación usando JWT por primera vez, el autor del video de YouTube realizó una lista de reproducción acerca de esto y además realizó la autenticación en React
+En este ejercicio realicé una autenticación usando Sactum Cookie Token, el autor del video de YouTube realizó una lista de reproducción acerca de esto y además realizó la autenticación en React
 
 ## Contenido
 
-- [Proyecto: Autenticación con JSON Web Token](#proyecto-autenticación-con-json-web-token)
+- [Proyecto: Autenticación con Sactum Cookie Token](#proyecto-autenticación-con-sactum-cookie-token)
   - [Contenido](#contenido)
   - [Instalaciones](#instalaciones)
       - [1. Crear proyecto](#1-crear-proyecto)
