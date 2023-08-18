@@ -35,6 +35,7 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
     - [Models](#models)
       - [Modelo usuario](#modelo-usuario)
       - [Verificar HasApiTokens](#verificar-hasapitokens)
+    - [Crear manejador en ./app/Http/Middleware/Authenticate.php](#crear-manejador-en-apphttpmiddlewareauthenticatephp)
   - [Constribución](#constribución)
 
 ## Instalaciones
@@ -115,7 +116,7 @@ php artisan make:controller AuthController
 
 function user()
 {
-  return 'Authenticated user';
+  return Auth::user();
 }
 
 // ...
@@ -144,23 +145,24 @@ function register(Request $request)
 // ...
 
 function login(Request $request)
-{
-  if (!Auth::attempt($request->only('email', 'password'))) {
+  {
+    if (!Auth::attempt($request->only('email', 'password'))) {
+      return response([
+        'message' => 'Invalid credentials!'
+      ], Response::HTTP_UNAUTHORIZED);
+    }
+
+    /** @var User $user */
+    $user = Auth::user();
+    $token = $user->createToken('token')->plainTextToken;
+
+    $cookie = cookie('jwt', $token, 60 * 24); // 1 day
+
     return response([
-      'message' => 'Invalid credentials!'
-    ], Response::HTTP_UNAUTHORIZED);
+      'message' => 'Success',
+      'token' => $token
+    ])->withCookie($cookie);
   }
-
-  /** @var User $user */
-  $user = Auth::user();
-  $token = $user->createToken('token')->plainTextToken;
-
-  $cookie = cookie('jwt', $token, 60 * 24); // 1 day
-
-  return response([
-    'message' => 'Success'
-  ])->withCookie($cookie);
-}
 
 // ...
 ```
@@ -226,6 +228,27 @@ use Laravel\Sanctum\HasApiTokens;
 use HasApiTokens, HasFactory, Notifiable, HasApiTokens;
 
 // ...
+```
+
+### Crear manejador en ./app/Http/Middleware/Authenticate.php
+
+```php
+use Closure;
+// ...
+
+class Authenticate extends Middleware
+{
+  // ...
+
+  public function handle($request, Closure $next, ...$guards)
+    {
+      if ($jwt = $request->cookie('jwt')) {
+        $request->headers->set('Authorization', 'Bearer ' . $jwt);
+      }
+      $this->authenticate($request, $guards);
+      return $next($request);
+    }
+}
 ```
 
 ## Constribución
