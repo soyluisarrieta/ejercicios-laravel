@@ -25,6 +25,8 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [Crear ruta](#crear-ruta)
     - [Controllers](#controllers)
       - [Crear controlador](#crear-controlador)
+    - [Migrations](#migrations)
+      - [Migración de tabla user](#migración-de-tabla-user)
     - [Models](#models)
   - [Constribución](#constribución)
 
@@ -87,7 +89,33 @@ Route::get('user', [AuthController::class, 'user']);
 php artisan make:controller AuthController
 ```
 
+### Migrations
+
+#### Migración de tabla user
+
+1. Eliminamos todas las migraciones excepto ...000000_create_user_table.php
+2. En esta migración simplificaremos la tabla con estas columnas
+
+```php
+// ...
+
+public function up(): void
+{
+  Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->string('password');
+    $table->timestamps();
+  });
+}
+
+// ...
+```
+
+
 ### Models
+
 
 ## Constribución
 
