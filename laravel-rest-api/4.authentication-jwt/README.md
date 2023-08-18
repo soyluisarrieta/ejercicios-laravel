@@ -21,6 +21,7 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [3. Duplicar archivo `.env.example` y ponerle el nombre `.env` (probablemente deba generar la APP\_KEY con el botón verde y reiniciar la página)](#3-duplicar-archivo-envexample-y-ponerle-el-nombre-env-probablemente-deba-generar-la-app_key-con-el-botón-verde-y-reiniciar-la-página)
       - [4. Crear base de datos MySQL en XAMPP con el nombre 'laravel-api-jwt' o cambiar nombre en el archivo .env `DB_DATABASE`](#4-crear-base-de-datos-mysql-en-xampp-con-el-nombre-laravel-api-jwt-o-cambiar-nombre-en-el-archivo-env-db_database)
       - [5. Ejecutar migraciones](#5-ejecutar-migraciones)
+      - [6. Activar `supports_credentials' => true` en "./config/corts.php"](#6-activar-supports_credentials--true-en-configcortsphp)
   - [Notas](#notas)
     - [Router](#router)
       - [Crear rutas](#crear-rutas)
@@ -80,6 +81,8 @@ php artisan serve
 ```bash
 php artisan migrate
 ```
+
+#### 6. Activar `supports_credentials' => true` en "./config/corts.php"
 
 ## Notas
 
