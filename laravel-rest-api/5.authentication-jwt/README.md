@@ -15,6 +15,7 @@ En el ejercicio anterior, el video supuestamente decia que era JWT pero en reali
       - [1. Crear proyecto](#1-crear-proyecto)
       - [2. Para autocompletado preciso del editor IDE Helper for Laravel](#2-para-autocompletado-preciso-del-editor-ide-helper-for-laravel)
       - [3. JWT por Tymon](#3-jwt-por-tymon)
+      - [4. Añadir provider JWT en './config/app.php'](#4-añadir-provider-jwt-en-configappphp)
   - [Uso](#uso)
       - [1. Después de clonar el repositorio, instalar dependencias](#1-después-de-clonar-el-repositorio-instalar-dependencias)
       - [2. Iniciar servidor](#2-iniciar-servidor)
@@ -45,6 +46,20 @@ composer require --dev barryvdh/laravel-ide-helper
 
 ```bash
 composer require tymon/jwt-auth
+```
+
+#### 4. Añadir provider JWT en './config/app.php'
+
+```php
+// ...
+
+'providers' => ServiceProvider::defaultProviders()->merge([
+  // ...
+  
+  Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+])->toArray(),
+
+// ...
 ```
 
 ## Uso
