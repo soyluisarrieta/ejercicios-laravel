@@ -28,10 +28,12 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
       - [Crear controlador](#crear-controlador)
       - [Controlador user](#controlador-user)
       - [Controlador register](#controlador-register)
+      - [Controlador login](#controlador-login)
     - [Migrations](#migrations)
       - [Migración de tabla user](#migración-de-tabla-user)
     - [Models](#models)
       - [Modelo usuario](#modelo-usuario)
+      - [Verificar HasApiTokens](#verificar-hasapitokens)
   - [Constribución](#constribución)
 
 ## Instalaciones
@@ -90,6 +92,7 @@ En lugar de usar la ruta para autenticación Sanctum, usarémos esta ruta para r
 ```php
 Route::get('user', [AuthController::class, 'user']);
 Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 ```
 
 ### Controllers
@@ -126,6 +129,33 @@ function register(Request $request)
     'email' => $request->input('email'),
     'password' => Hash::make($request->input('password')),
   ]);
+}
+
+// ...
+```
+
+#### Controlador login
+
+```php
+// ...
+
+function login(Request $request)
+{
+  if (!Auth::attempt($request->only('email', 'password'))) {
+    return response([
+      'message' => 'Invalid credentials!'
+    ], Response::HTTP_UNAUTHORIZED);
+  }
+
+  /** @var User $user */
+  $user = Auth::user();
+  $token = $user->createToken('token')->plainTextToken;
+
+  $cookie = cookie('jwt', $token, 60 * 24); // 1 day
+
+  return response([
+    'message' => 'Success'
+  ])->withCookie($cookie);
 }
 
 // ...
@@ -183,6 +213,16 @@ protected $hidden = [
 // ...
 ```
 
+#### Verificar HasApiTokens
+
+```php
+use Laravel\Sanctum\HasApiTokens;
+// ...
+
+use HasApiTokens, HasFactory, Notifiable, HasApiTokens;
+
+// ...
+```
 
 ## Constribución
 
