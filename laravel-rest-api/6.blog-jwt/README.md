@@ -16,8 +16,6 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
 - [Proyecto: CRUD Blog usando JWT](#proyecto-crud-blog-usando-jwt)
   - [Indice](#indice)
   - [Instalación](#instalación)
-    - [Controllers](#controllers)
-      - [Crear controlador](#crear-controlador)
   - [Constribución](#constribución)
 
 
@@ -65,27 +63,38 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
 | POST   | /api/refresh | Refresh access token                     |
 | POST   | /api/logout  | Invalidate the current token and log out |
 
-## Configuración JWT
+### Models
 
-### 1. 
-
-## Notas
-
-### Rutas
+#### User
 
 ```php
-
+use Tymon\JWTAuth\Contracts\JWTSubject;
 // ...
 
+class User extends Authenticatable implements JWTSubject
+{
+  // ...
+  
+  /**
+   * Get the identifier that will be stored in the subject claim of the JWT.
+   *
+   * @return mixed
+   */
+  public function getJWTIdentifier()
+  {
+    return $this->getKey();
+  }
 
-```
-
-### Controllers
-
-#### Crear controlador
-
-```bash
-php artisan make:controller AuthController
+  /**
+   * Return a key value array, containing any custom claims to be added to the JWT.
+   *
+   * @return array
+   */
+  public function getJWTCustomClaims()
+  {
+    return [];
+  }
+}
 ```
 
 
