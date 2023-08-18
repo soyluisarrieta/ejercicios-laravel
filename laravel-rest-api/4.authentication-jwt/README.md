@@ -28,6 +28,7 @@ En este ejercicio realicé una autenticación usando JWT por primera vez, el aut
     - [Migrations](#migrations)
       - [Migración de tabla user](#migración-de-tabla-user)
     - [Models](#models)
+      - [Modelo usuario](#modelo-usuario)
   - [Constribución](#constribución)
 
 ## Instalaciones
@@ -115,6 +116,31 @@ public function up(): void
 
 
 ### Models
+
+#### Modelo usuario
+
+Borramos los arreglos excepto estos 2 con estos indices
+
+```php
+// ...
+
+protected $fillable = [
+  'name',
+  'email',
+  'password',
+];
+
+/**
+ * The attributes that should be hidden for serialization.
+ *
+ * @var array<int, string>
+ */
+protected $hidden = [
+  'password'
+];
+
+// ...
+```
 
 
 ## Constribución
