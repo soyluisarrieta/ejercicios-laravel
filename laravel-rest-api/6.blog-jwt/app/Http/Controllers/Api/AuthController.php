@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -15,15 +18,6 @@ class AuthController extends Controller
   public function __construct()
   {
     $this->middleware('auth:api', ['except' => ['login', 'register']]);
-  }
-
-  /**
-   * Create new user
-   * 
-   * @return void
-   */
-  public function register()
-  {
   }
 
   /**
@@ -42,6 +36,33 @@ class AuthController extends Controller
    */
   public function logout()
   {
+    auth()->logout();
+    return response()->json(['message' => 'Successfully logged out']);
+  }
+
+  /**
+   * Create new user
+   * 
+   * @return void
+   */
+  public function register(RegisterRequest $request)
+  {
+    $data = $request->validated();
+    $user = User::create([
+      'name' => $data['name'],
+      'email' => $data['email'],
+      'password' => bcrypt($data['password'])
+    ]);
+
+    $token = JWTAuth::fromUser($user);
+    return response([
+      'success' => true,
+      'message' => 'User created successfully!',
+      'data' => [
+        'user' => $user,
+        'access_token' => $token
+      ],
+    ], 200);
   }
 
   /**
@@ -51,6 +72,7 @@ class AuthController extends Controller
    */
   public function profile()
   {
+    return response()->json(auth()->user());
   }
 
   /**
@@ -60,6 +82,7 @@ class AuthController extends Controller
    */
   public function refresh()
   {
+    return $this->respondWithToken(auth()->refresh());
   }
 
   /**
@@ -71,5 +94,10 @@ class AuthController extends Controller
    */
   public function respondWithToken($token)
   {
+    return response()->json([
+      'access_token' => $token,
+      'token_type' => 'bearer',
+      'expires_in' => auth()->factory()->getTTL() * 60
+    ]);
   }
 }
