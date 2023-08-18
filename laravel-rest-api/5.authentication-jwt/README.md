@@ -11,13 +11,14 @@ En el ejercicio anterior, el video supuestamente decia que era JWT pero en reali
 
 - [Proyecto: Autenticación con JSON Web Token](#proyecto-autenticación-con-json-web-token)
   - [Contenido](#contenido)
-  - [Instalaciones](#instalaciones)
+  - [Configuracion](#configuracion)
       - [1. Crear proyecto](#1-crear-proyecto)
       - [2. Para autocompletado preciso del editor IDE Helper for Laravel](#2-para-autocompletado-preciso-del-editor-ide-helper-for-laravel)
       - [3. JWT por Tymon](#3-jwt-por-tymon)
       - [4. Añadir provider JWT en './config/app.php'](#4-añadir-provider-jwt-en-configappphp)
       - [5. Publicar provider JWT](#5-publicar-provider-jwt)
       - [6. Generar una clave secreta JWT en .env](#6-generar-una-clave-secreta-jwt-en-env)
+      - [7. Configurar auth para jwt](#7-configurar-auth-para-jwt)
   - [Uso](#uso)
       - [1. Después de clonar el repositorio, instalar dependencias](#1-después-de-clonar-el-repositorio-instalar-dependencias)
       - [2. Iniciar servidor](#2-iniciar-servidor)
@@ -30,7 +31,7 @@ En el ejercicio anterior, el video supuestamente decia que era JWT pero en reali
       - [Crear controlador](#crear-controlador)
   - [Constribución](#constribución)
 
-## Instalaciones
+## Configuracion
 
 #### 1. Crear proyecto
 
@@ -74,6 +75,36 @@ php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServicePro
 
 ```bash
 php artisan jwt:secret
+```
+
+#### 7. Configurar auth para jwt
+
+En el archivo './config/auth.php' configuramos lo siguiente:
+
+```php
+// ...
+
+'defaults' => [
+  'guard' => 'api',
+  'passwords' => 'users',
+]
+
+// ...
+
+'guards' => [
+  'web' => [
+    'driver' => 'session',
+    'provider' => 'users',
+  ],
+
+  'api' => [
+    'driver' => 'jwt',
+    'provider' => 'users',
+    'hash' => false
+  ],
+],
+
+// ...
 ```
 
 ## Uso
