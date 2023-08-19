@@ -56,12 +56,12 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
     ```
 ## Endpoints
 
-| Method | Endpoint     | Description                              |
-| ------ | ------------ | ---------------------------------------- |
-| POST   | /api/login   | User login and token generation          |
-| GET    | /api/me      | Get current user information             |
-| POST   | /api/refresh | Refresh access token                     |
-| POST   | /api/logout  | Invalidate the current token and log out |
+| Method | Endpoint          | Description                                  |
+| ------ | ----------------- | -------------------------------------------- |
+| POST   | /api/auth/login   | Inicio de sesión y generación de token       |
+| GET    | /api/auth/profile | Obtener información del usuario actual       |
+| POST   | /api/auth/refresh | Refrescar acceso token                       |
+| POST   | /api/auth/logout  | Invalidar el token actual y cerrar la sesión |
 
 ### Models
 
