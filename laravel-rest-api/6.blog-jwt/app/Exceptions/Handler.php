@@ -2,9 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Handler extends ExceptionHandler
 {
@@ -31,8 +32,16 @@ class Handler extends ExceptionHandler
 
   public function render($request, Throwable $exception)
   {
-    if ($exception instanceof AuthenticationException) {
-      return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+    try {
+      JWTAuth::parseToken()->authenticate();
+    } catch (Exception $e) {
+      if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+        return response()->json(['success' => false, 'message' => 'Token is Invalid'], 401);
+      } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+        return response()->json(['success' => false, 'message' => 'Token is Expired'], 401);
+      } {
+        return response()->json(['success' => false, 'message' => 'Authorization Token not found'], 401);
+      }
     }
 
     return parent::render($request, $exception);
