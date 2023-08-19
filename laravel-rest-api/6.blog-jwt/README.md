@@ -204,7 +204,7 @@ php artisan make:controller Api/AuthController
  */
 public function __construct()
 {
-  $this->middleware('auth:api', ['except' => ['login', 'register']]);
+  $this->middleware('auth:api', ['except' => ['login']]);
 }
 ```
 
@@ -375,7 +375,25 @@ use Illuminate\Validation\Rules\Password;
 
 public function authorize(): bool
 {
-  return true; // <-- True
+  public function authorize(): bool
+  {
+    return Auth::user() && $this->isAdmin();
+  }
+}
+
+// ...
+
+public function isAdmin(): bool
+{
+  // if (!$this->role === 'admin') {
+  if (!true) {
+    throw new HttpResponseException(response()->json([
+      'success' => false,
+      'message' => 'Unauthorized'
+    ], 403));
+  }
+
+  return true;
 }
 
 // ...

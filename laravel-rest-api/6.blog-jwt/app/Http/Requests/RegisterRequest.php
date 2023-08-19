@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
@@ -12,6 +14,22 @@ class RegisterRequest extends FormRequest
    */
   public function authorize(): bool
   {
+    return Auth::user() && $this->isAdmin();
+  }
+
+  /**
+   * Check if the user is admin role
+   */
+  public function isAdmin(): bool
+  {
+    // if (!$this->role === 'admin') {
+    if (!true) {
+      throw new HttpResponseException(response()->json([
+        'success' => false,
+        'message' => 'Unauthorized'
+      ], 403));
+    }
+
     return true;
   }
 
