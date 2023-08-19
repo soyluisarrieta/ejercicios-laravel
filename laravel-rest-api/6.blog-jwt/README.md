@@ -30,12 +30,15 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
         - [Método Profile](#método-profile)
         - [Método Refresh Token](#método-refresh-token)
         - [Método Respond with Token](#método-respond-with-token)
+      - [Blog](#blog)
     - [Requests](#requests)
       - [Crear request](#crear-request)
       - [Solicitud Login](#solicitud-login)
       - [Solicitud Register](#solicitud-register)
     - [Models](#models)
       - [User](#user)
+    - [Migrations](#migrations)
+      - [Generar migración](#generar-migración)
   - [Constribución](#constribución)
 
 
@@ -340,6 +343,8 @@ public function respondWithToken($token, $user, $message)
 }
 ```
 
+#### Blog
+
 ### Requests
 
 #### Crear request
@@ -444,7 +449,15 @@ class User extends Authenticatable implements JWTSubject
 }
 ```
 
+### Migrations
 
+#### Generar migración
+
+La convención de nomenclatura `create_<nombre en plural>_table` es una práctica recomendada:
+
+```bash
+php artisan make:migration create_posts_table
+```
 
 ## Constribución
 
