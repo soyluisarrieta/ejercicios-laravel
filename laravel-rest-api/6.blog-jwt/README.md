@@ -16,6 +16,26 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
 - [Proyecto: CRUD Blog usando JWT](#proyecto-crud-blog-usando-jwt)
   - [Indice](#indice)
   - [Instalación](#instalación)
+  - [Configuración JWT](#configuración-jwt)
+    - [Router](#router)
+      - [Endpoints](#endpoints)
+      - [Rutas de autenticación](#rutas-de-autenticación)
+    - [Controllers](#controllers)
+      - [Crear nuevo controlador](#crear-nuevo-controlador)
+      - [Autenticación](#autenticación)
+        - [Método constructor](#método-constructor)
+        - [Método Login](#método-login)
+        - [Método Logout](#método-logout)
+        - [Método Register](#método-register)
+        - [Método Profile](#método-profile)
+        - [Método Refresh Token](#método-refresh-token)
+        - [Método Respond with Token](#método-respond-with-token)
+    - [Requests](#requests)
+      - [Crear request](#crear-request)
+      - [Solicitud Login](#solicitud-login)
+      - [Solicitud Register](#solicitud-register)
+    - [Models](#models)
+      - [User](#user)
   - [Constribución](#constribución)
 
 
@@ -53,15 +73,324 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
 
    ```bash
    php artisan jwt:secret
-    ```
-## Endpoints
+   ```
 
-| Method | Endpoint          | Description                                  |
-| ------ | ----------------- | -------------------------------------------- |
-| POST   | /api/auth/login   | Inicio de sesión y generación de token       |
-| GET    | /api/auth/profile | Obtener información del usuario actual       |
-| POST   | /api/auth/refresh | Refrescar acceso token                       |
-| POST   | /api/auth/logout  | Invalidar el token actual y cerrar la sesión |
+## Configuración JWT
+
+1. Añadir provider en './config/app.php'
+    ```php
+    'providers' => ServiceProvider::defaultProviders()->merge([
+      //...
+
+      Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+    ])->toArray(),
+    ```
+2. Crear alias en './config/app.php'
+    ```php
+    'aliases' => Facade::defaultAliases()->merge([
+        // ...
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+      ])->toArray(),
+    ```
+3. Publicar provider
+    ```bash
+    php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+    ```
+4. Generar clave secreta JWT
+    ```bash
+    php artisan jwt:secret
+    ```
+5. Actualizar [modelo usuario](#user) con los métodos de la implementación [JWTSubject](https://jwt-auth.readthedocs.io/en/develop/quick-start/#update-your-user-model)
+6. Configurar Auth guard en './config/auth.php'
+    ```php
+    // ...
+
+    'defaults' => [
+      'guard' => 'api',
+      'passwords' => 'users',
+    ],
+
+    // ...
+
+    'guards' => [
+      'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+      ],
+
+      'api' => [
+        'driver' => 'jwt',
+        'provider' => 'users',
+      ],
+    ],
+    ```
+7. Generar [controlador de authenticación](#autenticación) y añadir las excepciones en el constructor
+8. Crear las requests [Login](#solicitud-login) y [Register](#solicitud-register)
+9. Crear los métodos [login](#método-login), [logout](#método-logout), [register](#método-register), [profile](#método-profile) y [refresh](#método-refresh-token) en el [controlador de authenticación](#autenticación).
+10. Crear [rutas de cada método](#rutas-de-autenticación)
+11. Crear render para mensajes de excepciones en el archivo './app/Exceptions/Handler.php'
+    ```php
+    use Exception;
+    use Tymon\JWTAuth\Facades\JWTAuth;
+    // ...
+
+    class Handler extends ExceptionHandler
+    {
+      // ...
+
+    public function render($request, Throwable $exception)
+      {
+        try {
+          JWTAuth::parseToken()->authenticate();
+        } catch (Exception $e) {
+          if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+            return response()->json(['success' => false, 'message' => 'Token is Invalid'], 401);
+          } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+            return response()->json(['success' => false, 'message' => 'Token is Expired'], 401);
+          } {
+            return response()->json(['success' => false, 'message' => 'Authorization Token not found'], 401);
+          }
+        }
+
+        return parent::render($request, $exception);
+      }
+    }
+    ```
+
+### Router
+
+#### Endpoints
+
+| Method | Endpoint           | Description                                  |
+| ------ | ------------------ | -------------------------------------------- |
+| POST   | /api/auth/register | Registrar nuevo usuario                      |
+| POST   | /api/auth/login    | Inicio de sesión y generación de token       |
+| GET    | /api/auth/profile  | Obtener información del usuario actual       |
+| POST   | /api/auth/refresh  | Refrescar acceso token                       |
+| POST   | /api/auth/logout   | Invalidar el token actual y cerrar la sesión |
+
+#### Rutas de autenticación
+```php
+Route::group([
+  'middleware' => 'api',
+  'prefix' => 'auth'
+], function ($router) {
+  Route::post('login', [AuthController::class, 'login']);
+  Route::post('logout', [AuthController::class, 'logout']);
+  Route::post('register', [AuthController::class, 'register']);
+  Route::post('refresh', [AuthController::class, 'refresh']);
+  Route::get('profile', [AuthController::class, 'profile']);
+});
+```
+
+### Controllers
+
+#### Crear nuevo controlador
+
+```bash
+php artisan make:controller Api/AuthController
+```
+
+#### Autenticación
+
+##### Método constructor
+
+```php
+/**
+ * Create a new AuthController instance.
+ *
+ * @return void
+ */
+public function __construct()
+{
+  $this->middleware('auth:api', ['except' => ['login', 'register']]);
+}
+```
+
+##### Método Login
+
+```php
+/**
+ * Get a JWT via given credentials.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function login(LoginRequest $request)
+{
+  $credentials = $request->validated();
+  try {
+    if (!$token = JWTAuth::attempt($credentials)) {
+      return response([
+        'success' => false,
+        'message' => 'Invalid email or password, try again',
+      ], 401);
+    }
+
+    $user = JWTAuth::user();
+  } catch (JWTException $e) {
+    return response([
+      'success' => false,
+      'message' => 'Technical error!'
+    ], 500);
+  }
+  return $this->respondWithToken($token, $user, 'User login successfully!');
+}
+```
+
+##### Método Logout
+
+```php
+/**
+ * Log the user out (Invalidate the token).
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function logout()
+{
+  JWTAuth::parseToken()->invalidate();
+  return response()->json([
+    'success' => true,
+    'message' => 'User logout successfully!'
+  ]);
+}
+```
+
+##### Método Register
+
+```php
+/**
+ * Create new user
+ * 
+ * @return void
+ */
+public function register(RegisterRequest $request)
+{
+  $data = $request->validated();
+  $user = User::create([
+    'name' => $data['name'],
+    'email' => $data['email'],
+    'password' => bcrypt($data['password'])
+  ]);
+
+  $token = JWTAuth::fromUser($user);
+  return $this->respondWithToken($token, $user, 'User created successfully!');
+}
+```
+
+##### Método Profile
+
+```php
+/**
+ * Get the authenticated User.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function profile()
+{
+  $user = JWTAuth::parseToken()->authenticate();
+  return response()->json([
+    'success' => true,
+    'message' => 'User data found successfully!',
+    'data' => ['user' => $user]
+  ]);
+}
+```
+
+##### Método Refresh Token
+
+```php
+/**
+ * Refresh a token.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function refresh()
+{
+  $user = JWTAuth::parseToken()->authenticate();
+  $newToken = JWTAuth::refresh();
+  return $this->respondWithToken($newToken, $user, 'Token refresh successfully!');
+}
+```
+
+##### Método Respond with Token
+
+```php
+/**
+ * Get the token array structure.
+ *
+ * @param  string $token
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function respondWithToken($token, $user, $message)
+{
+  return response()->json([
+    'success' => true,
+    'message' => $message,
+    'data' => [
+      'user' => $user,
+      'authorization' => [
+        'access_token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => JWTAuth::factory()->getTTL() * 60
+      ]
+    ],
+  ], 200);
+}
+```
+
+### Requests
+
+#### Crear request
+
+```bash
+php artisan make:request LoginRequest
+```
+
+#### Solicitud Login
+
+```php
+public function authorize(): bool
+{
+  return true; // <-- True
+}
+
+// ...
+
+public function rules(): array
+{
+  return [
+    'email' => 'required|string|email|max:100|exists:users,email',
+    'password' => 'required|string|min:6'
+  ];
+}
+```
+
+#### Solicitud Register
+
+```php
+use Illuminate\Validation\Rules\Password;
+// ...
+
+public function authorize(): bool
+{
+  return true; // <-- True
+}
+
+// ...
+
+public function rules(): array
+{
+  return [
+    'name' => 'required|string|max:100',
+    'email' => 'required|string|email|max:100|unique:users,email',
+    'password' => [
+      'required', 'string', 'confirmed', Password::min(6)->letters()->numbers()
+    ]
+  ];
+}
+```
 
 ### Models
 
@@ -74,7 +403,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
   // ...
-  
+
   /**
    * Get the identifier that will be stored in the subject claim of the JWT.
    *
@@ -98,7 +427,16 @@ class User extends Authenticatable implements JWTSubject
 ```
 
 
+
 ## Constribución
 
-Blog post: [Laravel 10 JWT Rest API Authentication Tutorial Example](https://www.tutsmake.com/laravel-10-jwt-rest-api-authentication-example-tutorial/)  
-Por: [Devendra Dode](https://www.youtube.com/@InformaticaDP)
+> En este caso hice cada método de autenticación comparando los siguientes post a modo de referencia
+
+- **Doc:** [JSON Web Token Authentication for Laravel & Lumen](https://jwt-auth.readthedocs.io/en/develop/quick-start/) - Sean Tymon  
+- **Blog:** [Tutorial Laravel 8 API REST con autentificación JWT (CRUD)](https://andresledo.es/php/laravel/api-rest-autentificacion-jwt/) - andresledo  
+- **Blog:** [Laravel 10 jwt auth using tymon/jwt-auth](https://dev.to/debo2696/laravel-10-jwt-auth-using-tymonjwt-auth-297g) - Debajyoti Das  
+- **Blog:** [Laravel 10 JWT - Complete API Authentication Tutorial](https://www.laravelia.com/post/laravel-10-jwt-complete-api-authentication-tutorial) - Mahedi Hasan  
+- **Blog:** [Laravel 10 JWT Rest API Authentication Tutorial Example](https://www.tutsmake.com/laravel-10-jwt-rest-api-authentication-example-tutorial/) - Devendra Dode  
+- **Blog:** [Autenticación con JWT en Laravel](https://www.nigmacode.com/laravel/jwt-en-laravel/) - nigmacode  
+- **Github:** [laravel-jwt-api-starter](https://github.com/ph-hitachi/laravel-jwt-api-starter) - Justin Lee  
+
