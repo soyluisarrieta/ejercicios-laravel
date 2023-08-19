@@ -36,6 +36,7 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
       - [Solicitud Login](#solicitud-login)
       - [Solicitud Register](#solicitud-register)
     - [Models](#models)
+      - [Generar modelo](#generar-modelo)
       - [User](#user)
     - [Migrations](#migrations)
       - [Generar migración](#generar-migración)
@@ -416,6 +417,12 @@ public function rules(): array
 ```
 
 ### Models
+
+#### Generar modelo
+
+```bash
+php artisan make:model Post
+```
 
 #### User
 
