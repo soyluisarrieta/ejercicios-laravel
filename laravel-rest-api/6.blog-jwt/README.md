@@ -40,6 +40,7 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
       - [User](#user)
     - [Migrations](#migrations)
       - [Generar migración](#generar-migración)
+      - [Añadir los tipos de dato](#añadir-los-tipos-de-dato)
   - [Constribución](#constribución)
 
 
@@ -460,11 +461,23 @@ class User extends Authenticatable implements JWTSubject
 
 #### Generar migración
 
-La convención de nomenclatura `create_<nombre en plural>_table` es una práctica recomendada:
+La convención de nomenclatura `create_<nombre en plural>_table` es una práctica recomendada porque crea directamente la Schema.
 
 ```bash
 php artisan make:migration create_posts_table
 ```
+
+La Schema luce de la siguiente manera dentro del método up:
+
+```php
+Schema::create('posts', function (Blueprint $table) {
+    $table->id();
+    $table->timestamps();
+});
+```
+
+#### Añadir los [tipos de dato](https://laravel.com/docs/10.x/migrations#available-column-types)
+
 
 ## Constribución
 
