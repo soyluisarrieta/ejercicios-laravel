@@ -38,6 +38,8 @@ Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT
     - [Models](#models)
       - [Generar modelo](#generar-modelo)
       - [User](#user)
+      - [Relationship](#relationship)
+        - [One to Many](#one-to-many)
     - [Migrations](#migrations)
       - [Generar migración](#generar-migración)
       - [Añadir los tipos de dato](#añadir-los-tipos-de-dato)
@@ -456,6 +458,48 @@ class User extends Authenticatable implements JWTSubject
   }
 }
 ```
+
+#### Relationship
+
+##### One to Many
+
+1. Un usuario puede crear muchos post
+
+    ```php
+    //app/Models/User.php
+
+    use Illuminate\Database\Eloquent\Relations\HasMany;
+    // ...
+
+    class User extends Authenticatable implements JWTSubject
+    {
+      // ...
+
+      public function posts(): HasMany
+      {
+        return $this->hasMany(Post::class);
+      }
+    }
+    ```
+
+2. Un post solo puede ser creado por un usuario
+
+    ```php
+    //app/Models/Post.php
+
+    use Illuminate\Database\Eloquent\Relations\BelongsTo;
+    // ...
+
+    class Post extends Model
+    {
+      // ...
+      
+      public function user(): BelongsTo
+      {
+        return $this->belongsTo(User::class);
+      }
+    }
+    ```
 
 ### Migrations
 
