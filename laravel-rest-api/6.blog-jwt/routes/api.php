@@ -27,4 +27,9 @@ Route::group([
   Route::get('profile', [AuthController::class, 'profile']);
 });
 
-Route::apiResource('posts', PostController::class);
+
+Route::middleware('auth')->group(function () {
+  Route::apiResource('posts', PostController::class);
+});
+
+Route::get('posts', [PostController::class, 'index']);
