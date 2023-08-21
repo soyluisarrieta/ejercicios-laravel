@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +26,5 @@ Route::group([
   Route::post('refresh', [AuthController::class, 'refresh']);
   Route::get('profile', [AuthController::class, 'profile']);
 });
+
+Route::apiResource('posts', PostController::class);
