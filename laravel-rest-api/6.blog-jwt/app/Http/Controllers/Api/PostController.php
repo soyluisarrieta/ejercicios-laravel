@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class PostController extends Controller
 {
@@ -14,8 +16,8 @@ class PostController extends Controller
    */
   public function index()
   {
-    $posts = Post::find(1);
-    return new PostResource($posts);
+    $posts = Post::all();
+    return PostResource::collection($posts);
   }
 
   /**
@@ -32,23 +34,24 @@ class PostController extends Controller
    */
   public function show(string $id)
   {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
+    $post = Post::find($id);
+    return new PostResource($post);
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, string $id)
+  public function update(Request $request, string $post)
   {
-    //
+    try {
+      $post = Post::findOrFail($post);
+      $post->update($request->all());
+      return response()->json(['success' => true, 'message' => 'Post updated successfully', 'data' => $post]);
+    } catch (ModelNotFoundException $e) {
+      return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+    } catch (\Exception $e) {
+      return response()->json(['success' => false, 'message' => 'An error occurred while updating the post'], 500);
+    }
   }
 
   /**

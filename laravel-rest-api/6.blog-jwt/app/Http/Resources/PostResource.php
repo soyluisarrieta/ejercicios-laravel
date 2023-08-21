@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use JWTAuth;
 
 class PostResource extends JsonResource
 {
@@ -12,14 +12,19 @@ class PostResource extends JsonResource
    *
    * @return array<string, mixed>
    */
-  public function toArray(Request $request): array
+  public function toArray($request): array
   {
-    return [
+    $data = [
       'id' => $this->id,
       'title' => $this->title,
       'description' => $this->description,
-      'body' => $this->body,
-      'user' => $this->user
+      'user' => $this->user,
     ];
+
+    if (JWTAuth::user() !== null) {
+      $data['body'] = $this->body;
+    }
+
+    return $data;
   }
 }
