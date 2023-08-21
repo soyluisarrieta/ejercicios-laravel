@@ -7,7 +7,6 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use JWTAuth;
 
 class PostController extends Controller
 {
@@ -57,8 +56,9 @@ class PostController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(string $id)
+  public function destroy(Post $post)
   {
-    //
+    $post->delete();
+    return response()->json(['success' => true, 'message' => 'Post deleted'], 204);
   }
 }

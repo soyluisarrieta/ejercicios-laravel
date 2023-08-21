@@ -9,7 +9,7 @@
 
 # Proyecto: CRUD Blog usando JWT
 
-Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT desde otra fuente y practicar con la administración básuca de recursos CRUD en API Laravel.
+Este proyecto es un ejercicio donde me enfoco en practicar la autenticación JWT desde otra fuente y practicar con la administración simple de recursos CRUD en API Laravel.
 
 ## Indice
 
