@@ -18,7 +18,7 @@ En este proyecto quise documentar como es generar un proyecto monolito de Larave
     ```bash
     php artisan breeze:install react
     ```
-4. Generar proyecto Laravel
+4. Ejecutar servidor de Vite para React
     ```bash
-    composer require laravel/breeze --dev
+    npm run dev
     ```
