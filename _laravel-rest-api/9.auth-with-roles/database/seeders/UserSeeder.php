@@ -63,5 +63,9 @@ class UserSeeder extends Seeder
         $user->givePermissionTo([
           $user_list,
         ]);
+
+        $user_role->givePermissionTo([
+          $user_list,
+        ]);
     }
 }
