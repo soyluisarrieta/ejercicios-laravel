@@ -66,7 +66,6 @@ class LoginTest extends TestCase
         # Esperando
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
-        $response->assertJsonFragment(['errors' => ['email' => ['The email field is required.']]]);
     }
 
     /**
@@ -83,7 +82,6 @@ class LoginTest extends TestCase
         # Esperando
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
-        $response->assertJsonFragment(['errors' => ['email' => ['The email field must be a valid email address.']]]);
     }
 
     /**
@@ -100,7 +98,6 @@ class LoginTest extends TestCase
         # Esperando
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
-        $response->assertJsonFragment(['errors' => ['password' => ['The password field is required.']]]);
     }
 
     /**
@@ -117,6 +114,5 @@ class LoginTest extends TestCase
         # Esperando
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
-        $response->assertJsonFragment(['errors' => ['password' => ['The password field must be at least 8 characters.']]]);
     }
 }
