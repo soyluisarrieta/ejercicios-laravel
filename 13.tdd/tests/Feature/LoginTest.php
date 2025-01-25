@@ -38,4 +38,23 @@ class LoginTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure(['data' => ['token']]);
     }
+
+    /**
+     * Un usuario no existente no puede iniciar sesión.
+     */
+    public function test_a_non_existing_user_cannot_login(): void
+    {
+        # Teniendo
+        $credentials = [
+            'email' => 'luis_no@arrieta.com',
+            'password' => 'password',
+        ];
+
+        # Haciendo
+        $response = $this->post("{$this->apiBase}/login", $credentials);
+
+        # Esperando
+        $response->assertStatus(401);
+        $response->assertJsonFragment(['status' => 401, 'message' => 'Unauthorized']);
+    }
 }
