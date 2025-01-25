@@ -102,4 +102,21 @@ class LoginTest extends TestCase
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
         $response->assertJsonFragment(['errors' => ['password' => ['The password field is required.']]]);
     }
+
+    /**
+     * La contraseña es requerida
+     */
+    public function test_password_must_have_at_lease_8_characters(): void
+    {
+        # Teniendo
+        $credentials = ['email' => 'luis@arrieta.com', 'password' => 'pass'];
+
+        # Haciendo
+        $response = $this->postJson("{$this->apiBase}/login", $credentials);
+
+        # Esperando
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
+        $response->assertJsonFragment(['errors' => ['password' => ['The password field must be at least 8 characters.']]]);
+    }
 }
