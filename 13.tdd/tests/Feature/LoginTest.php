@@ -25,10 +25,7 @@ class LoginTest extends TestCase
         // $this->withoutExceptionHandling();
 
         # Teniendo
-        $credentials = [
-            'email' => 'luis@arrieta.com',
-            'password' => 'password',
-        ];
+        $credentials = ['email' => 'luis@arrieta.com', 'password' => 'password'];
 
         # Haciendo
         $response = $this->postJson("{$this->apiBase}/login", $credentials);
@@ -45,10 +42,7 @@ class LoginTest extends TestCase
     public function test_a_non_existing_user_cannot_login(): void
     {
         # Teniendo
-        $credentials = [
-            'email' => 'luis_no@arrieta.com',
-            'password' => 'password',
-        ];
+        $credentials = ['email' => 'luis_no@arrieta.com', 'password' => 'password'];
 
         # Haciendo
         $response = $this->postJson("{$this->apiBase}/login", $credentials);
@@ -64,9 +58,7 @@ class LoginTest extends TestCase
     public function test_email_must_be_required(): void
     {
         # Teniendo
-        $credentials = [
-            'password' => 'password',
-        ];
+        $credentials = ['password' => 'password'];
 
         # Haciendo
         $response = $this->postJson("{$this->apiBase}/login", $credentials);
@@ -83,10 +75,7 @@ class LoginTest extends TestCase
     public function test_email_must_be_valid_email(): void
     {
         # Teniendo
-        $credentials = [
-            'email' => 'luisarrieta.com',
-            'password' => 'password',
-        ];
+        $credentials = ['email' => 'luisarrieta.com', 'password' => 'password'];
 
         # Haciendo
         $response = $this->postJson("{$this->apiBase}/login", $credentials);
@@ -95,5 +84,22 @@ class LoginTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
         $response->assertJsonFragment(['errors' => ['email' => ['The email field must be a valid email address.']]]);
+    }
+
+    /**
+     * La contraseña es requerida
+     */
+    public function test_password_must_be_required(): void
+    {
+        # Teniendo
+        $credentials = ['email' => 'luis@arrieta.com'];
+
+        # Haciendo
+        $response = $this->postJson("{$this->apiBase}/login", $credentials);
+
+        # Esperando
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
+        $response->assertJsonFragment(['errors' => ['password' => ['The password field is required.']]]);
     }
 }
