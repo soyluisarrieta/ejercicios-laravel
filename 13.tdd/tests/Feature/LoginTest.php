@@ -31,7 +31,7 @@ class LoginTest extends TestCase
         ];
 
         # Haciendo
-        $response = $this->post("{$this->apiBase}/login", $credentials);
+        $response = $this->postJson("{$this->apiBase}/login", $credentials);
         // $response->dump();
 
         # Esperando
@@ -51,10 +51,49 @@ class LoginTest extends TestCase
         ];
 
         # Haciendo
-        $response = $this->post("{$this->apiBase}/login", $credentials);
+        $response = $this->postJson("{$this->apiBase}/login", $credentials);
 
         # Esperando
         $response->assertStatus(401);
         $response->assertJsonFragment(['status' => 401, 'message' => 'Unauthorized']);
+    }
+
+    /**
+     * El correo electrónico es requerido
+     */
+    public function test_email_must_be_required(): void
+    {
+        # Teniendo
+        $credentials = [
+            'password' => 'password',
+        ];
+
+        # Haciendo
+        $response = $this->postJson("{$this->apiBase}/login", $credentials);
+
+        # Esperando
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
+        $response->assertJsonFragment(['errors' => ['email' => ['The email field is required.']]]);
+    }
+
+    /**
+     * El correo electrónico es inválido
+     */
+    public function test_email_must_be_valid_email(): void
+    {
+        # Teniendo
+        $credentials = [
+            'email' => 'luisarrieta.com',
+            'password' => 'password',
+        ];
+
+        # Haciendo
+        $response = $this->postJson("{$this->apiBase}/login", $credentials);
+
+        # Esperando
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
+        $response->assertJsonFragment(['errors' => ['email' => ['The email field must be a valid email address.']]]);
     }
 }
