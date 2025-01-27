@@ -101,7 +101,7 @@ class LoginTest extends TestCase
     }
 
     /**
-     * La contraseña es requerida
+     * La contraseña debe contener almenos 8 caracteres
      */
     public function test_password_must_have_at_lease_8_characters(): void
     {
