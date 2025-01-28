@@ -11,7 +11,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -22,9 +22,9 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'min:2',
-            'last_name' => 'min:2',
-            'email' => 'email|unique:users',
+            'name' => 'required|min:2',
+            'last_name' => 'required|min:2',
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
         ];
     }
 }

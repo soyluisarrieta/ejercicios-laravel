@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 
 class UpdateProfileController extends Controller
 {
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request)
     {
         auth()->user()->update($request->all());
         $user = UserResource::make(auth()->user()->fresh());
