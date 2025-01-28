@@ -6,6 +6,7 @@ use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UpdateUserDataTest extends TestCase
@@ -60,7 +61,6 @@ class UpdateUserDataTest extends TestCase
             'name' => '',
             'last_name' => 'Arrieta',
             'email' => 'luis@arrieta.com',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -81,7 +81,6 @@ class UpdateUserDataTest extends TestCase
             'name' => 'L',
             'last_name' => 'Arrieta',
             'email' => 'luis@arrieta.com',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -101,7 +100,6 @@ class UpdateUserDataTest extends TestCase
         $data = [
             'name' => 'Luis',
             'email' => 'luis@arrieta.com',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -122,7 +120,6 @@ class UpdateUserDataTest extends TestCase
             'name' => 'Luis',
             'last_name' => 'A',
             'email' => 'luis@arrieta.com',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -143,7 +140,6 @@ class UpdateUserDataTest extends TestCase
             'name' => 'Luis',
             'email' => '',
             'last_name' => 'Arrieta',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -164,7 +160,6 @@ class UpdateUserDataTest extends TestCase
             'name' => 'Luis',
             'email' => 'luisarrieta.com',
             'last_name' => 'Arrieta',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -187,7 +182,6 @@ class UpdateUserDataTest extends TestCase
             'name' => 'Luis',
             'email' => 'emailexisting@example.com',
             'last_name' => 'Arrieta',
-            'password' => 'password',
         ];
 
         # Haciendo
@@ -196,5 +190,30 @@ class UpdateUserDataTest extends TestCase
         # Esperando
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
+    }
+
+    /**
+     * No puede actualizar la contraseña 
+     */
+    public function test_an_authenticated_user_cannot_modify_their_password(): void
+    {
+        # Teniendo
+        $data = [
+            'name' => 'Luis Updated',
+            'last_name' => 'Arrieta Updated',
+            'email' => 'luis@arrieta.com',
+            'password' => 'newpassword',
+        ];
+
+        # Haciendo
+        $response = $this->apiAs(User::find(1), 'PUT', "{$this->apiBase}/profile", $data);
+
+        # Esperando
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['message', 'data', 'errors', 'status']);
+        $response->assertJsonFragment(['message' => 'OK', 'status' => 200]);
+
+        $user = User::find(1);
+        $this->assertFalse(Hash::check($data['password'], $user->password));
     }
 }
