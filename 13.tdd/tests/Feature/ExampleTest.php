@@ -13,7 +13,7 @@ class ExampleTest extends TestCase
      */
     public function test_hello_world_route_should_return_status_success(): void
     {
-        $response = $this->get('/api/hello-world');
+        $response = $this->get('/api/v1/hello-world');
         $response->assertJson(['msg' => 'Hello World!']);
     }
 }

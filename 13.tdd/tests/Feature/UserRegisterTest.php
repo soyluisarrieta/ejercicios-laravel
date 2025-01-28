@@ -31,9 +31,14 @@ class UserRegisterTest extends TestCase
         $response->assertJsonStructure(['message', 'data', 'errors', 'status']);
         $response->assertJsonFragment(['message' => 'OK', 'status' => 200]);
         $response->assertJsonFragment([
-            'email' => $data['email'],
-            'name' => $data['name'],
-            'last_name' => $data['last_name'],
+            'data' => [
+                'user' => [
+                    'id' => $response->json('data.user.id'),
+                    'email' => $data['email'],
+                    'name' => $data['name'],
+                    'last_name' => $data['last_name'],
+                ]
+            ]
         ]);
 
         $this->assertDatabaseCount("users", 1);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 
 class RegisterController extends Controller
@@ -16,6 +17,6 @@ class RegisterController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        return jsonResponse($user);
+        return jsonResponse(['user' => UserResource::make($user)]);
     }
 }
