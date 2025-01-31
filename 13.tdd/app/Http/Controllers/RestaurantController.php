@@ -15,7 +15,10 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        //
+        $restaurants = auth()->user()->restaurants()->get();
+        return jsonResponse([
+            'restaurants' => RestaurantResource::collection($restaurants),
+        ]);
     }
 
     /**
