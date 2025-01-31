@@ -91,6 +91,25 @@ class UpdateRestaurantTest extends TestCase
     }
 
     /**
+     * Un usuario no autenticado no puede actualizar un restaurante
+     */
+    public function test_an_unauthenticated_user_cannot_update_a_restaurant(): void
+    {
+        # Teniendo
+        $restaurant = Restaurant::factory()->create();
+        $data = [
+            'name' => 'New restaurant',
+            'description' => 'New restaurant description',
+        ];
+
+        # Haciendo
+        $response = $this->putJson("{$this->apiBase}/restaurants/{$restaurant->id}", $data);
+
+        # Esperando
+        $response->assertStatus(403);
+    }
+
+    /**
      * El nombre del restaurante es requerido
      */
     public function test_restaurant_name_field_must_be_required(): void
