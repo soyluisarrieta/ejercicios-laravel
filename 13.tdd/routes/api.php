@@ -21,4 +21,5 @@ Route::post('/reset-password', [ResetPasswordController::class, 'send']);
 Route::put('/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
 // Restaurant
-Route::apiResource('/restaurants', RestaurantController::class);
+Route::middleware('auth:api')
+    ->apiResource('/restaurants', RestaurantController::class);
