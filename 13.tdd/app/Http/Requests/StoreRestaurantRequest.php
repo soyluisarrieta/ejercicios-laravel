@@ -11,7 +11,7 @@ class StoreRestaurantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -22,7 +22,16 @@ class StoreRestaurantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|min:3|max:100',
+            'slug' => 'required|unique:restaurants,slug|min:3|max:255',
+            'description' => 'required|min:10|max:255',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => str($this->get('name') . ' ' . uniqid())->slug(),
+        ]);
     }
 }
