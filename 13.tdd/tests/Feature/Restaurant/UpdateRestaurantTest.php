@@ -106,7 +106,7 @@ class UpdateRestaurantTest extends TestCase
         $response = $this->putJson("{$this->apiBase}/restaurants/{$restaurant->id}", $data);
 
         # Esperando
-        $response->assertStatus(403);
+        $response->assertStatus(401);
     }
 
     /**

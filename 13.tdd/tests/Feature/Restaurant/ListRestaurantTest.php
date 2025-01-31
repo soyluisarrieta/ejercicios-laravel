@@ -24,7 +24,7 @@ class ListRestaurantTest extends TestCase
     }
 
     /**
-     * Un usuario autenticado puede obtener sus restaurantes
+     * Un usuario autenticado puede ver sus restaurantes
      */
     public function test_an_authenticated_user_must_see_their_restaurants(): void
     {
@@ -40,5 +40,17 @@ class ListRestaurantTest extends TestCase
             'status'
         ]);
         $response->assertJsonCount(10, 'data.restaurants');
+    }
+
+    /**
+     * Un usuario no autenticado no puede ver los restaurantes
+     */
+    public function test_an_unauthenticated_user_cannot_see_restaurants(): void
+    {
+        # Haciendo
+        $response = $this->getJson("{$this->apiBase}/restaurants");
+
+        # Esperando
+        $response->assertStatus(401);
     }
 }
