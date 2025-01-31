@@ -74,4 +74,9 @@ class User extends Authenticatable implements JWTSubject
         $url = 'http://examplefront.app/reset-password?token=' . $token . '&email=' . $this->email;
         $this->notify(new ResetPasswordNotification($url));
     }
+
+    public function restaurants()
+    {
+        return $this->hasMany(Restaurant::class);
+    }
 }
