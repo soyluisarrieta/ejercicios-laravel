@@ -53,4 +53,26 @@ class ListRestaurantTest extends TestCase
         # Esperando
         $response->assertStatus(401);
     }
+
+    /**
+     * Un usuario solo puede ver sus propios restaurantes
+     */
+    public function test_an_user_must_see_only_their_restaurants(): void
+    {
+        # Teniendo
+        $user = User::factory()->create();
+
+        # Haciendo
+        $response = $this->apiAs($user, 'GET', "{$this->apiBase}/restaurants");
+
+        # Esperando
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'data' => ['restaurants'],
+            'errors',
+            'status'
+        ]);
+        $response->assertJsonCount(0, 'data.restaurants');
+    }
 }
