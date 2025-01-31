@@ -41,7 +41,10 @@ class RestaurantController extends Controller
      */
     public function update(UpdateRestaurantRequest $request, Restaurant $restaurant)
     {
-        //
+        $restaurant->update($request->validated());
+        return jsonResponse(data: [
+            'restaurant' => RestaurantResource::make($restaurant)
+        ]);
     }
 
     /**
