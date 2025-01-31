@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RestaurantResource;
 use App\Models\Restaurant;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
@@ -21,7 +22,10 @@ class RestaurantController extends Controller
      */
     public function store(StoreRestaurantRequest $request)
     {
-        //
+        $restaurant = auth()->user()->restaurants()->create($request->validated());
+        return jsonResponse(data: [
+            'restaurant' => RestaurantResource::make($restaurant)
+        ]);
     }
 
     /**
