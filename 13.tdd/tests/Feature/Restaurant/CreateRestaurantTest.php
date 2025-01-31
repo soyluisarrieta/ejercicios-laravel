@@ -52,6 +52,24 @@ class CreateRestaurantTest extends TestCase
     }
 
     /**
+     * Un usuario no autenticado no puede crear restaurantes
+     */
+    public function test_an_unauthenticated_user_cannot_create_restaurants(): void
+    {
+        # Teniendo
+        $data = [
+            'name' => 'New restaurant',
+            'description' => 'New restaurant description',
+        ];
+
+        # Haciendo
+        $response = $this->postJson("{$this->apiBase}/restaurants", $data);
+
+        # Esperando
+        $response->assertStatus(401);
+    }
+
+    /**
      * El nombre del restaurante es requerido
      */
     public function test_restaurant_name_field_must_be_required(): void
