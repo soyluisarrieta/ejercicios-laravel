@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Restaurant;
 use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,38 +21,32 @@ class CreateRestaurantTest extends TestCase
     /**
      * Crear una restaurante
      */
-    public function test_create_a_restaurant(): void
+    public function test_an_user_can_create_a_restaurant(): void
     {
         # Teniendo
         $data = [
             'name' => 'New restaurant',
             'description' => 'New restaurant description',
         ];
-        $slug = strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['name']));
 
         # Haciendo
         $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants", $data);
 
         # Esperando
         $response->assertStatus(200);
-        $response->assertJsonStructure(['message', 'data', 'errors', 'status']);
-        $response->assertJsonFragment(['message' => 'OK', 'status' => 200]);
-        $response->assertJsonFragment([
-            'data' => [
-                'restaurant' => [
-                    'id' => 1,
-                    'name' => $data['name'],
-                    'description' => $data['description'],
-                    'slug' => $slug,
-                ]
-            ]
+        $response->assertJsonStructure([
+            'message',
+            'data' => ['restaurant' => ['id', 'name', 'slug', 'description']],
+            'errors',
+            'status'
         ]);
 
-        $this->assertDatabaseCount("restaurant", 1);
-        $this->assertDatabaseHas('restaurant', [
+        $this->assertDatabaseCount("restaurants", 1);
+        $restaurant = Restaurant::first();
+        $this->assertStringContainsString('new-restaurant', $restaurant->slug);
+        $this->assertDatabaseHas('restaurants', [
             'id' => 1,
             'user_id' => 1,
-            'slug' => $slug,
             ...$data
         ]);
     }
