@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 use App\Http\Controllers\Auth\UpdateProfileController;
+use App\Http\Controllers\RestaurantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +19,6 @@ Route::put('/profile', [UpdateProfileController::class, 'update']);
 Route::put('/password', [UpdatePasswordController::class, 'update']);
 Route::post('/reset-password', [ResetPasswordController::class, 'send']);
 Route::put('/reset-password', [ResetPasswordController::class, 'resetPassword']);
+
+// Restaurant
+Route::apiResource('/restaurants', RestaurantController::class);
