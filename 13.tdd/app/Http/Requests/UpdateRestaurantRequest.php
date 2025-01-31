@@ -23,15 +23,17 @@ class UpdateRestaurantRequest extends FormRequest
     {
         return [
             'name' => 'required|min:3|max:100',
-            'slug' => 'required|unique:restaurants,slug|min:3|max:255',
+            'slug' => 'required|min:3|max:255|unique:restaurants,slug,' . $this->restaurant->id,
             'description' => 'required|min:10|max:255',
         ];
     }
 
     protected function prepareForValidation()
     {
-        $this->merge([
-            'slug' => str($this->get('name') . ' ' . uniqid())->slug(),
-        ]);
+        $slug = $this->restaurant->slug;
+        if ($this->get('name') !== $this->restaurant->name) {
+            $slug = str($this->get('name') . ' ' . uniqid())->slug();
+        }
+        $this->merge(['slug' => $slug]);
     }
 }

@@ -22,6 +22,7 @@ class UpdateRestaurantTest extends TestCase
             'user_id' => 1,
             'name' => 'Restaurant',
             'description' => 'Restaurant description',
+            'slug' => 'restaurant',
         ]);
     }
 
@@ -52,8 +53,40 @@ class UpdateRestaurantTest extends TestCase
         $restaurant = Restaurant::first();
         $this->assertStringContainsString('new-restaurant', $restaurant->slug);
         $this->assertDatabaseMissing('restaurants', [
-            'name' => 'Restaurant',
-            'description' => 'Restaurant description',
+            'name' => $this->restaurant->name,
+            'description' => $this->restaurant->description,
+        ]);
+    }
+
+    /**
+     * El slug del restaurante no puede cambiar si el nombre es el mismo
+     */
+    public function test_restaurant_slug_must_not_change_if_name_is_the_same(): void
+    {
+        # Teniendo
+        $data = [
+            'name' => $this->restaurant->name,
+            'description' => 'New restaurant description',
+        ];
+
+        # Haciendo
+        $response = $this->apiAs(User::find(1), 'PUT', "{$this->apiBase}/restaurants/{$this->restaurant->id}", $data);
+
+        # Esperando
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'data' => ['restaurant' => ['id', 'name', 'slug', 'description']],
+            'errors',
+            'status'
+        ]);
+
+        $this->assertDatabaseCount("restaurants", 1);
+        $restaurant = Restaurant::find(1);
+        $this->assertTrue($restaurant->slug === $this->restaurant->slug);
+        $this->assertDatabaseMissing('restaurants', [
+            'name' => $this->restaurant->name,
+            'description' => $this->restaurant->description,
         ]);
     }
 
