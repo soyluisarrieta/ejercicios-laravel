@@ -26,4 +26,5 @@ Route::middleware('auth:api')
     ->apiResource('/restaurants', RestaurantController::class);
 
 Route::middleware('auth:api')
-    ->apiResource('/plates', PlateController::class);
+    ->as('restaurants')
+    ->apiResource('{restaurant:id}/plates', PlateController::class);
