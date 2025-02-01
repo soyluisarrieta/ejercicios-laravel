@@ -84,4 +84,16 @@ class ListPlateTest extends TestCase
         $response->assertJsonPath('data.total_pages', 1);
         $response->assertJsonPath('data.count', 15);
     }
+
+    /**
+     * Un usuario no autenticado no puede ver los platos
+     */
+    public function test_an_unauthenticated_user_cannot_see_plates(): void
+    {
+        # Haciendo
+        $response = $this->getJson("{$this->apiBase}/{$this->restaurant->id}/plates");
+
+        # Esperando
+        $response->assertStatus(401);
+    }
 }
