@@ -32,7 +32,7 @@ class ListPlateTest extends TestCase
     public function test_a_user_can_see_their_plates_by_restaurant(): void
     {
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
 
         # Esperando
         $response->assertStatus(200);
@@ -59,7 +59,7 @@ class ListPlateTest extends TestCase
     public function test_a_user_can_see_their_paginated_plates_by_restaurant(): void
     {
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
 
         # Esperando
         $response->assertStatus(200);
@@ -91,7 +91,7 @@ class ListPlateTest extends TestCase
     public function test_an_unauthenticated_user_cannot_see_plates(): void
     {
         # Haciendo
-        $response = $this->getJson("{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->getJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
 
         # Esperando
         $response->assertStatus(401);
@@ -106,7 +106,7 @@ class ListPlateTest extends TestCase
         $user = User::factory()->create();
 
         # Haciendo
-        $response = $this->apiAs($user, 'GET', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->apiAs($user, 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
 
         # Esperando
         $response->assertStatus(403);
