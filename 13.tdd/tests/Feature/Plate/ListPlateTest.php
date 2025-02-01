@@ -27,13 +27,12 @@ class ListPlateTest extends TestCase
     }
 
     /**
-     * Un usuario puede ver sus platos
+     * Un usuario puede ver sus platos por restaurante
      */
-    public function test_a_user_can_see_their_plates(): void
+    public function test_a_user_can_see_their_plates_by_restaurant(): void
     {
         # Haciendo
         $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/{$this->restaurant->id}/plates");
-        $response->dump();
 
         # Esperando
         $response->assertStatus(200);

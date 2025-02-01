@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PlateCollection;
+use App\Http\Resources\PlateResource;
 use App\Models\Plate;
 use App\Http\Requests\StorePlateRequest;
 use App\Http\Requests\UpdatePlateRequest;
+use App\Models\Restaurant;
 
 class PlateController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Restaurant $restaurant)
     {
-        //
+        $plates = $restaurant->plates()->paginate();
+        return jsonResponse([
+            'plates' => PlateResource::collection($plates),
+        ]);
     }
 
     /**
