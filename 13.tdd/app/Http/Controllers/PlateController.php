@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PlateCollection;
-use App\Http\Resources\PlateResource;
 use App\Models\Plate;
 use App\Http\Requests\StorePlateRequest;
 use App\Http\Requests\UpdatePlateRequest;
@@ -17,9 +16,7 @@ class PlateController extends Controller
     public function index(Restaurant $restaurant)
     {
         $plates = $restaurant->plates()->paginate();
-        return jsonResponse([
-            'plates' => PlateResource::collection($plates),
-        ]);
+        return jsonResponse(new PlateCollection($plates));
     }
 
     /**
