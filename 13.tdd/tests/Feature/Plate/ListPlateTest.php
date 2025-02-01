@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Restaurant;
+use App\Models\Plate;
 use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,7 +18,7 @@ class ListPlateTest extends TestCase
     {
         parent::setUp();
         $this->seed(UserSeeder::class);
-        $this->plates = Restaurant::factory()->count(15)->create();
+        $this->plates = Plate::factory()->count(15)->create();
     }
 
     /**
