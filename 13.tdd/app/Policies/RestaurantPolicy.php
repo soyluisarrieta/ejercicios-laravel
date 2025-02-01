@@ -63,4 +63,9 @@ class RestaurantPolicy
     {
         return false;
     }
+
+    public function viewPlates(User $user, Restaurant $restaurant): bool
+    {
+        return $user->id === $restaurant->user_id;
+    }
 }
