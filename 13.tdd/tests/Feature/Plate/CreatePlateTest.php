@@ -64,36 +64,59 @@ class CreatePlateTest extends TestCase
     }
 
     /**
-     * Un usuario no autenticado no puede crear restaurantes
+     * Un usuario no autenticado no puede crear platos
      */
-    public function test_an_unauthenticated_user_cannot_create_restaurants(): void
+    public function test_a_unauthenticated_user_cannot_create_plates(): void
     {
         # Teniendo
         $data = [
-            'name' => 'New restaurant',
-            'description' => 'New restaurant description',
+            'name' => 'New plate',
+            'description' => 'New plate description',
+            'price' => '$123',
         ];
 
         # Haciendo
-        $response = $this->postJson("{$this->apiBase}/restaurants", $data);
+        $response = $this->postJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
 
         # Esperando
         $response->assertStatus(401);
     }
 
     /**
-     * El nombre del restaurante es requerido
+     * Un usuario solo puede crear platos de sus propios restaurantes
      */
-    public function test_restaurant_name_field_must_be_required(): void
+    public function test_a_user_can_only_create_plates_from_their_restaurants(): void
+    {
+        # Teniendo
+        $data = [
+            'name' => 'New plate',
+            'description' => 'New plate description',
+            'price' => '$123',
+        ];
+        $user = User::factory()->create();
+
+        # Haciendo
+        $response = $this->apiAs($user, 'POST', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
+        $response->dump();
+
+        # Esperando
+        $response->assertStatus(403);
+    }
+
+    /**
+     * El nombre del plato es requerido
+     */
+    public function test_plate_name_field_must_be_required(): void
     {
         # Teniendo
         $data = [
             'name' => '',
-            'description' => 'New restaurant description',
+            'description' => 'New plate description',
+            'price' => '$123',
         ];
 
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants", $data);
+        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
 
         # Esperando
         $response->assertStatus(422);
@@ -101,18 +124,19 @@ class CreatePlateTest extends TestCase
     }
 
     /**
-     * El nombre del restaurante es requerido
+     * El nombre del plato debe tener al menos 3 caracteres
      */
-    public function test_restaurant_name_field_must_have_at_lease_3_characters(): void
+    public function test_plate_name_field_must_have_at_lease_3_characters(): void
     {
         # Teniendo
         $data = [
-            'name' => 'ne',
-            'description' => 'New restaurant description',
+            'name' => 'Ne',
+            'description' => 'New plate description',
+            'price' => '$123',
         ];
 
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants", $data);
+        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
 
         # Esperando
         $response->assertStatus(422);
@@ -120,18 +144,19 @@ class CreatePlateTest extends TestCase
     }
 
     /**
-     * La descripción del restaurante es requerido
+     * La descripción del plato es requerido
      */
-    public function test_restaurant_description_field_must_be_required(): void
+    public function test_plate_description_field_must_be_required(): void
     {
         # Teniendo
         $data = [
-            'name' => 'New restaurant',
+            'name' => 'New plate',
             'description' => '',
+            'price' => '$123',
         ];
 
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants", $data);
+        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
 
         # Esperando
         $response->assertStatus(422);
@@ -139,18 +164,19 @@ class CreatePlateTest extends TestCase
     }
 
     /**
-     * La descripción del restaurante es requerido
+     * La descripción del plato debe tener al menos 3 caracteres
      */
-    public function test_restaurant_description_field_must_have_at_lease_3_characters(): void
+    public function test_plate_description_field_must_have_at_lease_3_characters(): void
     {
         # Teniendo
         $data = [
-            'name' => 'New restaurant',
+            'name' => 'New plate',
             'description' => 'Ne',
+            'price' => '$123',
         ];
 
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants", $data);
+        $response = $this->apiAs(User::find(1), 'POST', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
 
         # Esperando
         $response->assertStatus(422);
