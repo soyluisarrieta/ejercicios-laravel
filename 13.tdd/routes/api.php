@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 use App\Http\Controllers\Auth\UpdateProfileController;
+use App\Http\Controllers\PlateController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,3 +24,6 @@ Route::put('/reset-password', [ResetPasswordController::class, 'resetPassword'])
 // Restaurant
 Route::middleware('auth:api')
     ->apiResource('/restaurants', RestaurantController::class);
+
+Route::middleware('auth:api')
+    ->apiResource('/plates', PlateController::class);
