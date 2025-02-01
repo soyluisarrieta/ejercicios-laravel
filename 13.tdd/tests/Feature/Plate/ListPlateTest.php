@@ -47,6 +47,10 @@ class ListPlateTest extends TestCase
             'status'
         ]);
         $response->assertJsonCount(15, 'data.plates');
+
+        foreach (range(0, 14) as $platePosition) {
+            $response->assertJsonPath("data.plates.{$platePosition}.restaurant_id", $this->restaurant->id);
+        }
     }
 
     /**
