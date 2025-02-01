@@ -20,7 +20,7 @@ class ListPlateTest extends TestCase
     {
         parent::setUp();
         $this->seed(UserSeeder::class);
-        $this->restaurant = Restaurant::factory()->create();
+        $this->restaurant = Restaurant::factory()->create(['user_id' => 1,]);
         $this->plates = Plate::factory()->count(15)->create([
             'restaurant_id' => $this->restaurant->id
         ]);
@@ -95,5 +95,20 @@ class ListPlateTest extends TestCase
 
         # Esperando
         $response->assertStatus(401);
+    }
+
+    /**
+     * Un usuario solo no puede ver platos de otros restaurantes
+     */
+    public function test_a_user_cannot_see_plates_from_another_restaurants(): void
+    {
+        # Teniendo
+        $user = User::factory()->create();
+
+        # Haciendo
+        $response = $this->apiAs($user, 'GET', "{$this->apiBase}/{$this->restaurant->id}/plates");
+
+        # Esperando
+        $response->assertStatus(403);
     }
 }
