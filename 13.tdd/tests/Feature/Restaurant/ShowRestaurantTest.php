@@ -53,9 +53,9 @@ class ShowRestaurantTest extends TestCase
     }
 
     /**
-     * Un usuario no autenticado no puede ver los restaurantes
+     * Un usuario no autenticado no puede ver uno de los restaurantes
      */
-    public function test_an_unauthenticated_user_cannot_see_restaurants(): void
+    public function test_an_unauthenticated_user_cannot_see_any_restaurants(): void
     {
         # Haciendo
         $response = $this->getJson("{$this->apiBase}/restaurants/{$this->restaurant->id}");
@@ -65,7 +65,7 @@ class ShowRestaurantTest extends TestCase
     }
 
     /**
-     * Un usuario solo puede ver sus propios restaurantes
+     * Un usuario solo puede ver su propio restaurantes
      */
     public function test_an_user_must_see_only_their_restaurants(): void
     {
@@ -76,13 +76,6 @@ class ShowRestaurantTest extends TestCase
         $response = $this->apiAs($user, 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}");
 
         # Esperando
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'message',
-            'data' => ['restaurants'],
-            'errors',
-            'status'
-        ]);
-        $response->assertJsonCount(0, 'data.restaurants');
+        $response->assertStatus(403);
     }
 }
