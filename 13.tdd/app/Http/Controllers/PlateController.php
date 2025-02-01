@@ -27,6 +27,7 @@ class PlateController extends Controller
      */
     public function store(StorePlateRequest $request, Restaurant $restaurant)
     {
+        Gate::authorize('view', $restaurant);
         $plate = $restaurant->plates()->create($request->validated());
         return jsonResponse(['plate' => PlateResource::make($plate)]);
     }
