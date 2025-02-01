@@ -9,4 +9,6 @@ class Plate extends Model
 {
     /** @use HasFactory<\Database\Factories\PlateFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }
