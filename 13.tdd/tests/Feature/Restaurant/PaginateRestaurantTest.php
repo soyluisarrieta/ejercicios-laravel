@@ -47,5 +47,11 @@ class PaginateRestaurantTest extends TestCase
                 'count'
             ],
         ]);
+
+        $response->assertJsonPath('data.total', 150);
+        $response->assertJsonPath('data.current_page', 1);
+        $response->assertJsonPath('data.per_page', 15);
+        $response->assertJsonPath('data.total_pages', 10);
+        $response->assertJsonPath('data.count', 15);
     }
 }
