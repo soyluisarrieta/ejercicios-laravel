@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PlateCollection;
+use App\Http\Resources\PlateResource;
 use App\Models\Plate;
 use App\Http\Requests\StorePlateRequest;
 use App\Http\Requests\UpdatePlateRequest;
@@ -24,9 +25,10 @@ class PlateController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePlateRequest $request)
+    public function store(StorePlateRequest $request, Restaurant $restaurant)
     {
-        //
+        $plate = $restaurant->plates()->create($request->validated());
+        return jsonResponse(['plate' => PlateResource::make($plate)]);
     }
 
     /**
