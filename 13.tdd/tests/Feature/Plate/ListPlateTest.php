@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Plate;
+use App\Models\Restaurant;
 use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,12 +14,16 @@ class ListPlateTest extends TestCase
     use RefreshDatabase;
 
     protected $plates;
+    protected $restaurant;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->seed(UserSeeder::class);
-        $this->plates = Plate::factory()->count(15)->create();
+        $this->restaurant = Restaurant::factory()->create();
+        $this->plates = Plate::factory()->count(15)->create([
+            'restaurant_id' => $this->restaurant->id
+        ]);
     }
 
     /**
@@ -27,13 +32,18 @@ class ListPlateTest extends TestCase
     public function test_a_user_can_see_their_plates(): void
     {
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/plates");
+        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response->dump();
 
         # Esperando
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'message',
-            'data' => ['plates'],
+            'data' => [
+                'plates' => [
+                    '*' => ['id', 'restaurant_id', 'name', 'description', 'price']
+                ]
+            ],
             'errors',
             'status'
         ]);
