@@ -37,7 +37,9 @@ class RestaurantController extends Controller
      */
     public function show(Restaurant $restaurant)
     {
-        //
+        return jsonResponse([
+            'restaurant' => RestaurantResource::make($restaurant)
+        ]);
     }
 
     /**
