@@ -97,7 +97,6 @@ class CreatePlateTest extends TestCase
 
         # Haciendo
         $response = $this->apiAs($user, 'POST', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
-        $response->dump();
 
         # Esperando
         $response->assertStatus(403);
