@@ -31,8 +31,6 @@ class ShowPlateTest extends TestCase
      */
     public function test_a_user_can_show_a_plate(): void
     {
-        $this->withoutExceptionHandling();
-
         # Haciendo
         $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}";
         $response = $this->apiAs($this->user, 'GET', $endpoint);
@@ -57,5 +55,33 @@ class ShowPlateTest extends TestCase
                 ]
             ],
         ]);
+    }
+
+    /**
+     * Un usuario no autenticado no puede ver los detalles de ningun plato
+     */
+    public function test_a_unauthenticated_user_cannot_see_any_plate(): void
+    {
+        # Haciendo
+        $response = $this->getJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}");
+
+        # Esperando
+        $response->assertStatus(401);
+    }
+
+    /**
+     * Un usuario no puede ver los detalles de un plato de otro usuario
+     */
+    public function test_a_user_cannot_see_a_plate_of_another_user(): void
+    {
+        # Teniendo
+        $user = User::factory()->create();
+
+        # Haciendo
+        $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}";
+        $response = $this->apiAs($user, 'GET', $endpoint);
+
+        # Esperando
+        $response->assertStatus(403);
     }
 }
