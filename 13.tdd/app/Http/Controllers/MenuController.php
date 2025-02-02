@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\Restaurant;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
+use Illuminate\Support\Facades\Gate;
 
 class MenuController extends Controller
 {
@@ -23,6 +24,7 @@ class MenuController extends Controller
      */
     public function store(StoreMenuRequest $request, Restaurant $restaurant)
     {
+        Gate::authorize("view", $restaurant);
         $menu = $restaurant->menus()->create($request->only('name', 'description'));
         $menu->plates()->sync($request->get('plate_ids'));
         return jsonResponse([

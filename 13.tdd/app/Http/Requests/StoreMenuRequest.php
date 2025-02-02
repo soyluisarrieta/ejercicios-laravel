@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MenuPlateRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMenuRequest extends FormRequest
@@ -22,8 +23,10 @@ class StoreMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => 'required|min:3',
+            'description' => 'required|min:3',
+            'plate_ids' => 'required|array',
+            'plate_ids.*' => ['required', 'exists:plates,id', new MenuPlateRule],
         ];
     }
 }
