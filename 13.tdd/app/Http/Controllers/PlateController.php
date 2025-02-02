@@ -58,6 +58,7 @@ class PlateController extends Controller
      */
     public function destroy(Restaurant $restaurant, Plate $plate)
     {
+        Gate::authorize('delete', $restaurant);
         $plate->delete();
         return jsonResponse();
     }
