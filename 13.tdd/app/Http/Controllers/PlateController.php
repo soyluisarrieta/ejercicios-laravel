@@ -56,8 +56,9 @@ class PlateController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Plate $plate)
+    public function destroy(Restaurant $restaurant, Plate $plate)
     {
-        //
+        $plate->delete();
+        return jsonResponse();
     }
 }
