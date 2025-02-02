@@ -11,4 +11,9 @@ class Plate extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class, 'menus_plates');
+    }
 }

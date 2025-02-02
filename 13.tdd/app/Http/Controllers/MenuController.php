@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MenuResource;
 use App\Models\Menu;
+use App\Models\Restaurant;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 
@@ -19,9 +21,13 @@ class MenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMenuRequest $request)
+    public function store(StoreMenuRequest $request, Restaurant $restaurant)
     {
-        //
+        $menu = $restaurant->menus()->create($request->only('name', 'description'));
+        $menu->plates()->sync($request->get('plate_ids'));
+        return jsonResponse([
+            'menu' => MenuResource::make($menu)
+        ]);
     }
 
     /**

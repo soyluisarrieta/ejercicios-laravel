@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 use App\Http\Controllers\Auth\UpdateProfileController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PlateController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Http\Request;
@@ -28,3 +29,7 @@ Route::middleware('auth:api')
 Route::middleware('auth:api')
     ->as('restaurants')
     ->apiResource('restaurants/{restaurant:id}/plates', PlateController::class);
+
+Route::middleware('auth:api')
+    ->as('restaurants')
+    ->apiResource('restaurants/{restaurant:id}/menus', MenuController::class);
