@@ -35,9 +35,10 @@ class PlateController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Plate $plate)
+    public function show(Restaurant $restaurant, Plate $plate)
     {
-        //
+        Gate::authorize('view', $restaurant);
+        return jsonResponse(['plate' => PlateResource::make($plate)]);
     }
 
     /**
