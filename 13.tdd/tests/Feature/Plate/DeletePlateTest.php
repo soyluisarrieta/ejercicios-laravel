@@ -31,8 +31,6 @@ class DeletePlateTest extends TestCase
      */
     public function test_a_user_can_delete_their_plates(): void
     {
-        $this->withoutExceptionHandling();
-
         # Haciendo
         $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}";
         $response = $this->apiAs($this->user, 'DELETE', $endpoint);
@@ -40,5 +38,35 @@ class DeletePlateTest extends TestCase
         # Esperando
         $response->assertStatus(200);
         $this->assertDatabaseMissing('plates', ['id' => $this->plate->id]);
+    }
+
+    /**
+     * Un usuario no autenticado no puede eliminar platos
+     */
+    public function test_a_unauthenticated_user_cannot_delete_any_plates(): void
+    {
+        # Haciendo
+        $response = $this->deleteJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}");
+
+        # Esperando
+        $response->assertStatus(401);
+        $this->assertDatabaseHas('plates', ['id' => $this->plate->id]);
+    }
+
+    /**
+     * Un usuario no puede eliminar los platos de otros usuarios
+     */
+    public function test_a_user_cannot_delete_another_user_plates(): void
+    {
+        # Teniendo
+        $user = User::factory()->create();
+
+        # Haciendo
+        $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}";
+        $response = $this->apiAs($user, 'DELETE', $endpoint);
+
+        # Esperando
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('plates', ['id' => $this->plate->id]);
     }
 }
