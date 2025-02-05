@@ -27,17 +27,16 @@ class MenuController extends Controller
         Gate::authorize("view", $restaurant);
         $menu = $restaurant->menus()->create($request->only('name', 'description'));
         $menu->plates()->sync($request->get('plate_ids'));
-        return jsonResponse([
-            'menu' => MenuResource::make($menu)
-        ]);
+        return jsonResponse(['menu' => MenuResource::make($menu)]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Menu $menu)
+    public function show(Restaurant $restaurant, Menu $menu)
     {
-        //
+        Gate::authorize('view', $restaurant);
+        return jsonResponse(['menu' => MenuResource::make($menu)]);
     }
 
     /**
