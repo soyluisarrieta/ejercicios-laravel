@@ -53,8 +53,11 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy(Restaurant $restaurant, Menu $menu)
     {
-        //
+        Gate::authorize("view", $restaurant);
+        $menu->plates()->sync([]);
+        $menu->delete();
+        return jsonResponse();
     }
 }
