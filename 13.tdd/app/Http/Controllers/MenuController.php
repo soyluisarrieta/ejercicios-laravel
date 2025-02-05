@@ -43,9 +43,12 @@ class MenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMenuRequest $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, Restaurant $restaurant, Menu $menu)
     {
-        //
+        Gate::authorize("view", $restaurant);
+        $menu->update($request->only('name', 'description'));
+        $menu->plates()->sync($request->get('plate_ids'));
+        return jsonResponse(['menu' => MenuResource::make($menu)]);
     }
 
     /**
