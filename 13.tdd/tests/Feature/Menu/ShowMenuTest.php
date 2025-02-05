@@ -38,12 +38,9 @@ class ShowMenuTest extends TestCase
      */
     public function test_a_user_can_show_a_menu(): void
     {
-        $this->withoutExceptionHandling();
-
         # Haciendo
         $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}";
         $response = $this->apiAs($this->user, 'GET', $endpoint);
-        $response->dump();
 
         # Esperando
         $response->assertStatus(200);
@@ -90,5 +87,33 @@ class ShowMenuTest extends TestCase
                 'plate_id' => $plate->id,
             ]);
         }
+    }
+
+    /**
+     * Un usuario no autenticado no puede ver los detalles de ningun menu
+     */
+    public function test_a_unauthenticated_user_cannot_see_any_menu(): void
+    {
+        # Haciendo
+        $response = $this->getJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}");
+
+        # Esperando
+        $response->assertStatus(401);
+    }
+
+    /**
+     * Un usuario no puede ver los detalles de un menu de otro usuario
+     */
+    public function test_a_user_cannot_see_a_menu_of_another_user(): void
+    {
+        # Teniendo
+        $user = User::factory()->create();
+
+        # Haciendo
+        $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}";
+        $response = $this->apiAs($user, 'GET', $endpoint);
+
+        # Esperando
+        $response->assertStatus(403);
     }
 }
