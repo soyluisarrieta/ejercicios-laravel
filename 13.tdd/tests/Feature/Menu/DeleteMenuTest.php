@@ -47,4 +47,34 @@ class DeleteMenuTest extends TestCase
         $this->assertDatabaseMissing('menus', ['id' => $this->menu->id]);
         $this->assertDatabaseMissing('menus_plates', ['menu_id' => $this->menu->id]);
     }
+
+    /**
+     * Un usuario no autenticado no puede eliminar menus
+     */
+    public function test_a_unauthenticated_user_cannot_delete_any_menus(): void
+    {
+        # Haciendo
+        $response = $this->deleteJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}");
+
+        # Esperando
+        $response->assertStatus(401);
+        $this->assertDatabaseHas('plates', ['id' => $this->menu->id]);
+    }
+
+    /**
+     * Un usuario no puede eliminar los menus de otros usuarios
+     */
+    public function test_a_user_cannot_delete_another_user_menus(): void
+    {
+        # Teniendo
+        $user = User::factory()->create();
+
+        # Haciendo
+        $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}";
+        $response = $this->apiAs($user, 'DELETE', $endpoint);
+
+        # Esperando
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('menus', ['id' => $this->menu->id]);
+    }
 }
