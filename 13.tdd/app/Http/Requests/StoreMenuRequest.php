@@ -29,4 +29,11 @@ class StoreMenuRequest extends FormRequest
             'plate_ids.*' => ['required', 'exists:plates,id', new MenuPlateRule],
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'plate_ids' => array_unique($this->get('plate_ids')),
+        ]);
+    }
 }
