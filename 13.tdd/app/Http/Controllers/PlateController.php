@@ -54,6 +54,7 @@ class PlateController extends Controller
      */
     public function destroy(Restaurant $restaurant, Plate $plate)
     {
+        $plate->menus()->sync([]);
         $plate->delete();
         return jsonResponse();
     }
