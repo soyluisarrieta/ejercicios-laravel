@@ -26,7 +26,6 @@ class MenuController extends Controller
      */
     public function store(StoreMenuRequest $request, Restaurant $restaurant)
     {
-        Gate::authorize("view", $restaurant);
         $menu = $restaurant->menus()->create($request->only('name', 'description'));
         $menu->plates()->sync($request->get('plate_ids'));
         return jsonResponse(['menu' => MenuDetailResource::make($menu)]);
@@ -37,7 +36,6 @@ class MenuController extends Controller
      */
     public function show(Restaurant $restaurant, Menu $menu)
     {
-        Gate::authorize('view', $restaurant);
         return jsonResponse(['menu' => MenuDetailResource::make($menu)]);
     }
 
@@ -46,7 +44,6 @@ class MenuController extends Controller
      */
     public function update(UpdateMenuRequest $request, Restaurant $restaurant, Menu $menu)
     {
-        Gate::authorize("view", $restaurant);
         $menu->update($request->only('name', 'description'));
         $menu->plates()->sync($request->get('plate_ids'));
         return jsonResponse(['menu' => MenuDetailResource::make($menu)]);
@@ -57,7 +54,6 @@ class MenuController extends Controller
      */
     public function destroy(Restaurant $restaurant, Menu $menu)
     {
-        Gate::authorize("view", $restaurant);
         $menu->plates()->sync([]);
         $menu->delete();
         return jsonResponse();

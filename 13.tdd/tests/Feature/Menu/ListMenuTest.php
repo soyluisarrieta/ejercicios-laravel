@@ -38,7 +38,7 @@ class ListMenuTest extends TestCase
     public function test_a_user_can_see_their_menus(): void
     {
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus");
+        $response = $this->apiAs($this->user, 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus");
 
         # Esperando
         $response->assertStatus(200);
@@ -60,7 +60,7 @@ class ListMenuTest extends TestCase
     public function test_a_user_can_see_their_paginated_menus(): void
     {
         # Haciendo
-        $response = $this->apiAs(User::find(1), 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus");
+        $response = $this->apiAs($this->user, 'GET', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus");
 
         # Esperando
         $response->assertStatus(200);

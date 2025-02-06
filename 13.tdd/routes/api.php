@@ -22,14 +22,14 @@ Route::put('/password', [UpdatePasswordController::class, 'update']);
 Route::post('/reset-password', [ResetPasswordController::class, 'send']);
 Route::put('/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
-// Restaurant
-Route::middleware('auth:api')
-    ->apiResource('/restaurants', RestaurantController::class);
+Route::middleware('auth:api')->group(function () {
+    Route::apiResource('/restaurants', RestaurantController::class);
 
-Route::middleware('auth:api')
-    ->as('restaurants')
-    ->apiResource('restaurants/{restaurant:id}/plates', PlateController::class);
-
-Route::middleware('auth:api')
-    ->as('restaurants')
-    ->apiResource('restaurants/{restaurant:id}/menus', MenuController::class);
+    Route::middleware('can:view,restaurant')
+        ->prefix('restaurants/{restaurant:id}')
+        ->as('restaurants')
+        ->group(function () {
+            Route::apiResource('/plates', PlateController::class);
+            Route::apiResource('/menus', MenuController::class);
+        });
+});
