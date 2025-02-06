@@ -277,4 +277,26 @@ class UpdateMenuTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['description']]);
     }
+
+    /**
+     * Los platos duplicados del menu se deben ignorar
+     */
+    public function test_menu_duplicated_plates_must_be_ignored_to_update(): void
+    {
+        # Teniendo
+        $data = [
+            'name' => 'menu updated',
+            'description' => 'menu updated description',
+            'plate_ids' => [$this->plates->first()->id, $this->plates->first()->id]
+        ];
+
+        # Haciendo
+        $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}";
+        $response = $this->apiAs($this->user, 'PUT', $endpoint, $data);
+
+        # Esperando
+        $response->assertStatus(200);
+        $this->assertDatabaseCount('menus_plates', 1);
+        $this->assertTrue(Menu::first()->plates->contains($this->plates->first()));
+    }
 }
