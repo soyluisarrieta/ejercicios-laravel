@@ -212,6 +212,28 @@ class CreateMenuTest extends TestCase
     }
 
     /**
+     * Los platos duplicados del menu se deben ignorar
+     */
+    public function test_menu_duplicated_plates_must_be_ignored(): void
+    {
+        # Teniendo
+        $data = [
+            'name' => 'New menu',
+            'description' => 'New menu description',
+            'plate_ids' => [$this->plates->first()->id, $this->plates->first()->id]
+        ];
+
+        # Haciendo
+        $endpoint = "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus";
+        $response = $this->apiAs($this->user, 'POST', $endpoint, $data);
+
+        # Esperando
+        $response->assertStatus(200);
+        $this->assertDatabaseCount('menus_plates', 1);
+        $this->assertTrue(Menu::first()->plates->contains($this->plates->first()));
+    }
+
+    /**
      * El restaurante del menu debe pertener al usuario
      */
     public function test_menu_restaurant_must_belongs_to_user(): void
